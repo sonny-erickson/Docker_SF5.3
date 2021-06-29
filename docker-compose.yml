@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+    db:
+        image: mysql
+        container_name: db_docker_nameTochange
+        volumes:
+          - db-data:/var/lib/mysql
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: phpmyadmin_docker_nameTochange
+        depends_on:
+          - db
+        ports:
+          - 8080:80
+        environment:
+          PMA_HOST: db
+    www:
+        build: php
+        container_name: www_docker_symfony_nameTochange
+        ports:
+          - 8741:80
+        volumes:
+          - ./php/vhosts:/etc/apache2/sites-enabled
+          - ./:/var/www
+        restart: always
+        networks:
+            - dev
+
+networks:
+  dev:
+
+volumes:
+  db-data:
